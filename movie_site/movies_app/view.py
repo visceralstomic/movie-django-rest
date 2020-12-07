@@ -50,30 +50,15 @@ class MovieView(generics.RetrieveUpdateDestroyAPIView):
 
 
 
-class GenreViewList(generics.ListCreateAPIView):
-	queryset = Genre.objects.all()
-	serializer_class = GenreSerial
-	permission_classes = [IsAdminOrReadOnly]
-
-	def get(self, request, *args, **kwargs):
-		print('Data ', self.request.data)
-		return self.list(request, *args, **kwargs)
-
-
-class GenreView(generics.RetrieveUpdateDestroyAPIView):
+class GenreViewList(generics.ListCreateAPIView, generics.DestroyAPIView):
 	queryset = Genre.objects.all()
 	serializer_class = GenreSerial
 	permission_classes = [IsAdminOrReadOnly]
 
 
 
-class CountryViewList(generics.ListCreateAPIView):
+class CountryViewList(generics.ListCreateAPIView, generics.DestroyAPIView):
 	queryset = Country.objects.all()
-	serializer_class = CountrySerial
-	permission_classes = [IsAdminOrReadOnly]
-
-class CountryView(generics.RetrieveUpdateDestroyAPIView):
-	queryset = Movie.objects.all()
 	serializer_class = CountrySerial
 	permission_classes = [IsAdminOrReadOnly]
 
@@ -171,4 +156,3 @@ def search(request):
 	return Response({
 		'search':'Results not found or search query wasn\'t provided'
 	})
-		#
