@@ -17,7 +17,6 @@ from rest_framework import status, filters
 class MovieViewList(generics.ListCreateAPIView):
 	queryset = Movie.objects.all()
 	serializer_class = MovieSerial
-	permission_classes = [IsAdminOrReadOnly]
 	filter_backends = [filters.SearchFilter, filters.OrderingFilter]
 	search_fields = ['name']
 	ordering_fields = ['year', 'title', 'avg_rating', 'num_of_ratings']
@@ -73,6 +72,25 @@ class StaffView(generics.RetrieveUpdateDestroyAPIView):
 	queryset = Staff.objects.all()
 	serializer_class = StaffSerial
 	permission_classes = [IsAdminOrReadOnly]
+
+
+@api_view(['POST'])
+@permission_classes([IsAdminUser, IsAuthenticated])
+def rate_movie(request, movie_pk):
+	marks = request.data.get('mark', None)
+	if marks is not None:
+		movie = get_object_or_404(Movie, pk=movie_pk)
+		user = request.user
+		print(user)
+		rating_obj, created = Rating.objects.update_or_create(movie=movie, user=user,
+													defaults={'mark': marks})
+		serializer = RatingSerial(rating_obj, data=request.data, many=False)
+		serializer.is_valid(raise_exception=True)
+		serializer.save()
+		return Response(serializer.data, status.HTTP_200_OK)
+
+	else:
+		return Response(status.HTTP_400_BAD_REQUEST)
 
 
 
