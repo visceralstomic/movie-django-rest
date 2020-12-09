@@ -63,7 +63,7 @@ class Movie(models.Model):
 class Rating(models.Model):
 	mark = models.IntegerField(validators=[MinValueValidator(1), MaxValueValidator(10)])
 	movie = models.ForeignKey(Movie, on_delete=models.CASCADE)
-	user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='rating')
+	user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='ratings')
 
 	def save(self, *args, **kwargs):
 		super().save(*args, **kwargs)

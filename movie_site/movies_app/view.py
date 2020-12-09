@@ -5,7 +5,7 @@ from .serializers import (MovieSerial, MovieCUDSerial, GenreSerial,
 						QuerySerializer)
 from rest_framework import generics
 from rest_framework.permissions import IsAuthenticatedOrReadOnly, IsAuthenticated, IsAdminUser
-from .mv_permissions import IsAdminOrReadOnly, IsNotAdmin
+from .mv_permissions import IsAdminOrReadOnly, IsNotAdmin, IsRater, IsReviewer
 from django.contrib.auth import get_user_model
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
@@ -17,6 +17,7 @@ from rest_framework import status, filters
 class MovieViewList(generics.ListCreateAPIView):
 	queryset = Movie.objects.all()
 	serializer_class = MovieSerial
+	permission_classes = [IsAdminOrReadOnly]
 	filter_backends = [filters.SearchFilter, filters.OrderingFilter]
 	search_fields = ['name']
 	ordering_fields = ['year', 'title', 'avg_rating', 'num_of_ratings']
@@ -49,24 +50,33 @@ class MovieView(generics.RetrieveUpdateDestroyAPIView):
 
 
 
-class GenreViewList(generics.ListCreateAPIView, generics.DestroyAPIView):
+class GenreViewList(generics.ListCreateAPIView):
 	queryset = Genre.objects.all()
 	serializer_class = GenreSerial
-	permission_classes = [IsAdminOrReadOnly]
+	permission_classes = [IsAdminUser]
+
+class GenreDetail(generics.RetrieveUpdateDestroyAPIView):
+	queryset = Genre.objects.all()
+	serializer_class = GenreSerial
+	permission_classes = [IsAdminUser]
 
 
-
-class CountryViewList(generics.ListCreateAPIView, generics.DestroyAPIView):
+class CountryViewList(generics.ListCreateAPIView):
 	queryset = Country.objects.all()
 	serializer_class = CountrySerial
-	permission_classes = [IsAdminOrReadOnly]
+	permission_classes = [IsAdminUser]
+
+class CountryDetail(generics.RetrieveUpdateDestroyAPIView):
+	queryset = Genre.objects.all()
+	serializer_class = CountrySerial
+	permission_classes = [IsAdminUser]
 
 
 
 class StaffViewList(generics.ListCreateAPIView):
 	queryset = Staff.objects.all()
 	serializer_class = StaffSerial
-	permission_classes = [IsAdminOrReadOnly]
+	permission_classes = [IsAdminUser]
 
 class StaffView(generics.RetrieveUpdateDestroyAPIView):
 	queryset = Staff.objects.all()
@@ -74,23 +84,24 @@ class StaffView(generics.RetrieveUpdateDestroyAPIView):
 	permission_classes = [IsAdminOrReadOnly]
 
 
+
 @api_view(['POST'])
-@permission_classes([IsAdminUser, IsAuthenticated])
+@permission_classes([IsAuthenticated, IsNotAdmin])
 def rate_movie(request, movie_pk):
 	marks = request.data.get('mark', None)
 	if marks is not None:
 		movie = get_object_or_404(Movie, pk=movie_pk)
 		user = request.user
-		print(user)
 		rating_obj, created = Rating.objects.update_or_create(movie=movie, user=user,
-													defaults={'mark': marks})
+															  defaults={'mark': marks})
+
 		serializer = RatingSerial(rating_obj, data=request.data, many=False)
 		serializer.is_valid(raise_exception=True)
 		serializer.save()
-		return Response(serializer.data, status.HTTP_200_OK)
+		return Response(serializer.data, status=status.HTTP_200_OK)
 
 	else:
-		return Response(status.HTTP_400_BAD_REQUEST)
+		return Response(status=status.HTTP_400_BAD_REQUEST)
 
 
 
@@ -106,7 +117,7 @@ class RatingViewList(generics.ListCreateAPIView):
 class RatingView(generics.RetrieveUpdateDestroyAPIView):
 	queryset = Rating.objects.all()
 	serializer_class = RatingSerial
-	permission_classes = [IsAuthenticatedOrReadOnly, IsNotAdmin]
+	permission_classes = [IsAuthenticatedOrReadOnly, IsNotAdmin, IsRater]
 
 	def get_serializer_class(self):
 		return RatingCUDSerial if self.request.method in ('PUT', 'PATCH') else RatingSerial
@@ -117,20 +128,22 @@ class ReviewViewList(generics.ListCreateAPIView):
 	queryset = Review.objects.all()
 	serializer_class = ReviewSerial
 	permission_classes = [IsAuthenticatedOrReadOnly, IsNotAdmin]
-	lookup_field = 'movie_pk'
+	
+	def get_serializer_class(self):
+		return ReviewCUDSerial if self.request.method == 'POST' else ReviewSerial
+
+"""	lookup_field = 'movie_pk'
 
 	def get_queryset(self):
 		queryset = self.queryset.filter(movie=self.kwargs.get('movie_pk'))
-		return queryset
+		return queryset"""
 
-	def get_serializer_class(self):
-		return ReviewCUDSerial if self.request.method == 'POST' else ReviewSerial
 
 
 class ReviewView(generics.RetrieveUpdateDestroyAPIView):
 	queryset = Review.objects.all()
 	serializer_class = ReviewSerial
-	permission_classes = [IsAuthenticatedOrReadOnly, IsNotAdmin]
+	permission_classes = [IsAuthenticatedOrReadOnly, IsNotAdmin, IsReviewer]
 
 	def get_serializer_class(self):
 		return ReviewCUDSerial if self.request.method in ('PUT', 'PATCH') else ReviewSerial
