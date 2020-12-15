@@ -62,7 +62,7 @@ class MovieSerial(serializers.ModelSerializer):
 class MovieCUDSerial(serializers.ModelSerializer):
 	class Meta:
 		model = Movie
-		exclude = ['id', 'num_of_ratings', 'avg_rating', 'reviews']
+		exclude = ['id', 'num_of_ratings', 'avg_rating']
 
 
 
