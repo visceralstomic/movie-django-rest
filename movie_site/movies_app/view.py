@@ -127,8 +127,8 @@ class RatingView(generics.RetrieveUpdateDestroyAPIView):
 class ReviewViewList(generics.ListCreateAPIView):
 	queryset = Review.objects.all()
 	serializer_class = ReviewSerial
-	permission_classes = [IsAuthenticatedOrReadOnly, IsNotAdmin]
-	
+	#permission_classes = [IsAuthenticatedOrReadOnly, IsNotAdmin]
+
 	def get_serializer_class(self):
 		return ReviewCUDSerial if self.request.method == 'POST' else ReviewSerial
 
@@ -143,7 +143,7 @@ class ReviewViewList(generics.ListCreateAPIView):
 class ReviewView(generics.RetrieveUpdateDestroyAPIView):
 	queryset = Review.objects.all()
 	serializer_class = ReviewSerial
-	permission_classes = [IsAuthenticatedOrReadOnly, IsNotAdmin, IsReviewer]
+	#permission_classes = [IsAuthenticatedOrReadOnly, IsNotAdmin, IsReviewer]
 
 	def get_serializer_class(self):
 		return ReviewCUDSerial if self.request.method in ('PUT', 'PATCH') else ReviewSerial

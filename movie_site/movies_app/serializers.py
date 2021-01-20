@@ -9,7 +9,7 @@ Mini serializers block
 class MiniStaffSerial(serializers.ModelSerializer):
 	class Meta:
 		model = Staff
-		fields = ['name', 'surname']
+		fields = ['id','name', 'surname']
 
 class MiniCountrySerial(serializers.ModelSerializer):
 	class Meta:
@@ -24,14 +24,14 @@ class MiniGenresSerial(serializers.ModelSerializer):
 class MiniMoviesSerial(serializers.ModelSerializer):
 	class Meta:
 		model = Movie
-		fields = ['title']
+		fields = ['id', 'title']
 
 class MiniReviewSerial(serializers.ModelSerializer):
 	author = serializers.CharField()
 
 	class Meta:
 		model = Review
-		fields = ['title', 'review_text', 'author']
+		fields = ['id', 'title', 'review_text', 'author']
 
 class MiniRatingSerial(serializers.ModelSerializer):
 	class Meta:
