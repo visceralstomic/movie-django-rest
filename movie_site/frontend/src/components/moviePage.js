@@ -1,11 +1,12 @@
 import React, { Component } from 'react';
 import {Link} from 'react-router-dom';
-import "./staffPage";
+import {ServiceFunc} from "../service/serviceFunc";
 
 
 class MoviePage extends Component {
   constructor(props) {
     super(props);
+    this.service = new ServiceFunc();
     this.movieId = this.props.match.params.movieId;
     this.state = {
       title: null,
@@ -23,13 +24,7 @@ class MoviePage extends Component {
   }
 
   componentDidMount() {
-    fetch("/api/movies/" + this.movieId)
-      .then(response => {
-        if (response.status > 400) {
-          throw new Error("Something went wrong")
-        }
-        return response.json();
-      })
+    this.service.getMovie(this.movieId)
       .then(data => this.setState({...data}))
       .then(() => console.log(this.state))
       .catch(error => {

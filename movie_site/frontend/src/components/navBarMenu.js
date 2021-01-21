@@ -1,0 +1,11 @@
+import React, {Component} from "react";
+import {Link} from "react-router-dom";
+
+export default class NavBarMenu extends Component {
+
+  render() {
+     return (
+       <h1><Link to="/">Movie rater</Link></h1>
+     )
+  }
+}

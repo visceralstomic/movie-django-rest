@@ -112,7 +112,7 @@ class RatingCUDSerial(serializers.ModelSerializer):
 
 class ReviewSerial(serializers.ModelSerializer):
 	author = serializers.CharField()
-	movie = serializers.CharField()
+	movie = MiniMoviesSerial()
 
 	class Meta:
 		model = Review

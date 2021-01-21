@@ -1,9 +1,11 @@
 import React, {Component} from "react";
 import {Link} from "react-router-dom";
+import {ServiceFunc} from "../service/serviceFunc";
 
 export default class StaffPage extends Component {
   constructor(props){
     super(props);
+    this.service = new ServiceFunc;
     this.staffId = this.props.match.params.staffId;
     this.state = {
       name: null,
@@ -15,14 +17,7 @@ export default class StaffPage extends Component {
   }
 
   componentDidMount(){
-
-    fetch("/api/staff/" + this.staffId)
-      .then(response => {
-        if (response.status > 400) {
-          throw new Error("Something went wrong")
-        }
-        return response.json();
-      })
+    this.service.getStaffPerson(this.staffId)
       .then(data => this.setState({...data}))
       .then(() => console.log(this.state))
       .catch(error => {

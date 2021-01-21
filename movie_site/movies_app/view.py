@@ -5,7 +5,7 @@ from .serializers import (MovieSerial, MovieCUDSerial, GenreSerial,
 						QuerySerializer)
 from rest_framework import generics
 from rest_framework.permissions import IsAuthenticatedOrReadOnly, IsAuthenticated, IsAdminUser
-from .mv_permissions import IsAdminOrReadOnly, IsNotAdmin, IsRater, IsReviewer
+from .mv_permissions import IsAdminOrReadOnly, IsNotAdmin, IsRaterOrRead, IsReviewerOrRead
 from django.contrib.auth import get_user_model
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
@@ -117,7 +117,7 @@ class RatingViewList(generics.ListCreateAPIView):
 class RatingView(generics.RetrieveUpdateDestroyAPIView):
 	queryset = Rating.objects.all()
 	serializer_class = RatingSerial
-	permission_classes = [IsAuthenticatedOrReadOnly, IsNotAdmin, IsRater]
+	permission_classes = [IsAuthenticatedOrReadOnly, IsNotAdmin, IsRaterOrRead]
 
 	def get_serializer_class(self):
 		return RatingCUDSerial if self.request.method in ('PUT', 'PATCH') else RatingSerial
@@ -127,7 +127,7 @@ class RatingView(generics.RetrieveUpdateDestroyAPIView):
 class ReviewViewList(generics.ListCreateAPIView):
 	queryset = Review.objects.all()
 	serializer_class = ReviewSerial
-	#permission_classes = [IsAuthenticatedOrReadOnly, IsNotAdmin]
+	permission_classes = [IsAuthenticatedOrReadOnly, IsNotAdmin, IsReviewerOrRead]
 
 	def get_serializer_class(self):
 		return ReviewCUDSerial if self.request.method == 'POST' else ReviewSerial
@@ -143,7 +143,7 @@ class ReviewViewList(generics.ListCreateAPIView):
 class ReviewView(generics.RetrieveUpdateDestroyAPIView):
 	queryset = Review.objects.all()
 	serializer_class = ReviewSerial
-	#permission_classes = [IsAuthenticatedOrReadOnly, IsNotAdmin, IsReviewer]
+	permission_classes = [IsAuthenticatedOrReadOnly, IsNotAdmin, IsReviewerOrRead]
 
 	def get_serializer_class(self):
 		return ReviewCUDSerial if self.request.method in ('PUT', 'PATCH') else ReviewSerial
