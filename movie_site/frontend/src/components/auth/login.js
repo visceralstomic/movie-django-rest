@@ -1,6 +1,6 @@
 import React, {Component} from "react";
 import {AuthFunc} from "../../service/serviceFunc";
-
+import {Redirect} from "react-router-dom";
 
 export default class Login extends Component{
 
@@ -9,7 +9,8 @@ export default class Login extends Component{
     this.auth = new AuthFunc();
     this.state = {
       username:'',
-      password:''
+      password:'',
+      redirect: false
     }
   }
 
@@ -17,8 +18,10 @@ export default class Login extends Component{
     event.preventDefault();
     this.auth.loginUser(this.state.username, this.state.password)
       .then(res =>{
+        console.log(res)
         localStorage.setItem('access_token', res.access);
         localStorage.setItem('refresh_token', res.refresh);
+        this.setState({redirect: true})
       })
       .catch(error => {
         console.log(error)
@@ -32,18 +35,22 @@ export default class Login extends Component{
   render(){
     return (
       <>
-        <h2>Login</h2>
-        <form onSubmit={this.handleSubmit}>
-          <label>
-            Username:
-            <input name="username" type='text' value={this.state.username} onChange={this.handleChange}/>
-          </label>
-          <label>
-            Password:
-            <input name="password" type='password' value={this.state.password} onChange={this.handleChange}/>
-          </label>
-          <input type="submit" value="Submit"/>
-        </form>
+        {this.state.redirect ? <Redirect to="/" />
+        :<div>
+            <h2>Login</h2>
+            <form onSubmit={this.handleSubmit}>
+              <label>
+                Username:
+                <input name="username" type='text' value={this.state.username} onChange={this.handleChange}/>
+              </label>
+              <label>
+                Password:
+                <input name="password" type='password' value={this.state.password} onChange={this.handleChange}/>
+              </label>
+              <input type="submit" value="Submit"/>
+            </form>
+        </div>
+      }
       </>
     )
   }
