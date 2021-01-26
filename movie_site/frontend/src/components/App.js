@@ -8,45 +8,35 @@ import SinglReviewPage from "./singlReviewPage";
 import NavBarMenu from "./navBarMenu";
 import Login from "./auth/login.js"
 import TopPanel from "./topPanel";
-
+import {AuthFunc} from "../service/serviceFunc";
 
 
 class App extends Component {
   constructor(props){
     super(props);
+    this.auth = new AuthFunc();
     this.state = {
       logged_in: localStorage.getItem('access_token') ? true : false,
       username: ''
     }
   }
 
-  componentDidMount(){
-
-    if(this.state.logged_in){
-      fetch("/users/current_user/", {
-        headers:{
-          'access': localStorage.getItem('access_token'),
-        }
-      })
-      .then(res => res.json())
-      .then(data => {
+  getUser(){
+    this.auth.getCurrentUser().then(data => {
         this.setState({username: data.user})
       })
+  }
+
+  componentDidMount(){
+    if(this.state.logged_in){
+      this.getUser()
     }
   }
 
-  handleLogout = () => {
-    fetch("/blacklist/",{
-      method: "POST",
-      refresh_token: localStorage.getItem("refresh_token")
-    }).then(res => {
-        localStorage.removeItem("access_token");
-        localStorage.removeItem("refresh_token");
-        this.setState({logged_in: false});
-    }).catch(error => {
-        console.log(error)
-    })
 
+
+  loggedStatus = (status, username) => {
+    this.setState({logged_in:status, username:username})
   }
 
   render() {
@@ -55,16 +45,15 @@ class App extends Component {
       <Router>
         <NavBarMenu />
 
-        <TopPanel  username={this.state.username} logged_in={this.state.logged_in}/>
+        <TopPanel loggedStatus={this.loggedStatus} username={this.state.username} logged_in={this.state.logged_in}/>
 
         <Switch>
           <Route exact path="/" component={HomePage}/>
           <Route  path="/movie/:movieId" component={MoviePage} />
           <Route  path="/staff/:staffId" component={StaffPage} />
           <Route  path="/review/:reviewId" component={SinglReviewPage} />
-          <Route  path="/login/" component={Login} />
+          <Route  path="/login/" render={ props => <Login {...props} loggedIn={this.loggedStatus} />} />
         </Switch>
-        { this.state.logged_in ? <button onClick={this.handleLogout}>Logout</button> : null}
       </Router>
     )
   }

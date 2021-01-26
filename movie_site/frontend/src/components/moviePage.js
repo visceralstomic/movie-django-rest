@@ -1,6 +1,10 @@
 import React, { Component } from 'react';
 import {Link} from 'react-router-dom';
 import {ServiceFunc} from "../service/serviceFunc";
+import { faStar } from "@fortawesome/free-regular-svg-icons";
+import { faStar as solidStar } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {ReviewForm} from "./reviewForm";
 
 
 class MoviePage extends Component {
@@ -9,6 +13,7 @@ class MoviePage extends Component {
     this.service = new ServiceFunc();
     this.movieId = this.props.match.params.movieId;
     this.state = {
+      id: null,
       title: null,
       director: [],
       year: null,
@@ -19,25 +24,34 @@ class MoviePage extends Component {
       genres: [],
       num_of_ratings: null,
       avg_rating: null,
-      reviews: []
+      reviews: [],
+      highlight: -1
     }
   }
 
   componentDidMount() {
     this.service.getMovie(this.movieId)
       .then(data => this.setState({...data}))
-      .then(() => console.log(this.state))
       .catch(error => {
         console.log(error)
       })
   }
+
+  highlightRate = high => event =>{
+    this.setState({highlight:high})
+  }
+
+  rateMovie = (movieId, mark) => event => {
+    this.service.rateMovie(movieId, mark)
+  }
+
 
   renderPerson = (persons) => {
     return <span>{persons.map(person => <Link to={`/staff/${person.id}`}>{person.name} {person.surname}</Link>)}</span>
   }
 
   render() {
-    const {title, director, actors, writers, plot, year, genres, num_of_ratings, avg_rating, countries, reviews} = this.state;
+    const {id, title, director, actors, writers, plot, year, genres, num_of_ratings, avg_rating, countries, reviews} = this.state;
     return (
           <>
             <h2>{title} ({year})</h2>
@@ -48,8 +62,13 @@ class MoviePage extends Component {
             Rating: {avg_rating} ({num_of_ratings}) <br />
             Genres: {genres.map(genre => <span>{genre.name}</span>) }
             <p>Plot: {plot}</p>
+            {[...Array(10)].map( (e, i) => {
+              return <FontAwesomeIcon key={i} icon={this.state.highlight > i-1 ? solidStar : faStar}
+              onMouseEnter={this.highlightRate(i)} onMouseLeave={this.highlightRate(-1)} onClick={this.rateMovie(id, i+1)}/>
+            } )} <br />
+            <ReviewForm movieId={id}/>
             Reviews: {reviews.map(review =>
-              <span><Link to={`/review/${review.id}`}>{review.title}</Link> by {review.author}</span>
+              <p><Link to={`/review/${review.id}`}>{review.title}</Link> by {review.author}</p>
             )}
           </>
     )

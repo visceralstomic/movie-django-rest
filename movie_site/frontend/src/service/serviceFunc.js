@@ -29,33 +29,72 @@ class ServiceFunc {
   getReview(reviewId){
     return this.getRecource(`/movies/reviews/${reviewId}`);
   }
+
+  async postReq(url, body){
+    const res = await fetch(this.urlBase + url, {
+      method: "POST",
+      headers: {
+        'Authorization': "JWT " + localStorage.getItem('access_token'),
+        'Content-type': 'application/json'
+      },
+      body: JSON.stringify(body)
+    })
+  }
+
+  rateMovie(movieId, mark){
+    return this.postReq(`/movies/${movieId}/rate/`,{"mark": mark})
+  }
+
+  createReview(body){
+    return this.postReq("/movies/reviews/", body)
+  }
+
 }
 
 class AuthFunc {
   constructor(){
-    this.urlBase = "/users/token"
+    this.urlBase = "/users";
   }
 
-  async getRecource(url, username, password){
+  async handlingRecource(url, body){
     const curUrl = this.urlBase + url;
     const res = await fetch(curUrl, {
-      method: "POST",
-      headers: {
-        'Authorization': "JWT " + localStorage.getItem('access_token'),
-        'Content-Type': 'application/json',
-        'accept': 'application/json'
-      },
-      body: JSON.stringify({username,password})
-    })
-    if (!res.ok){
+          method: "POST",
+          headers: {
+            'Content-Type': 'application/json',
+            'accept': 'application/json'
+          },
+          body: JSON.stringify(body)
+        })
+
+    if (res.status > 400){
       throw new Error(`Couldn't fetch ${curUrl}. ${res.status}`)
     }
-    return await res.json();
+    try {
+      return await res.json()
+    } catch {
+      return await res;
+    }
   }
 
   loginUser(username, password){
-    let data = this.getRecource('/obtain/',  username, password);
-    return data;
+    return this.handlingRecource('/token/obtain/',  {username:username, password:password});
+  }
+
+  logoutAndBlacklist(){
+    return this.handlingRecource('/blacklist/', {  refresh_token: localStorage.getItem("refresh_token") });
+  }
+
+  async getCurrentUser(){
+    const res = await fetch("/users/current_user/", {
+      headers:{
+          'access': localStorage.getItem('access_token'),
+        }
+    })
+    if (res.status > 400){
+      throw new Error(`Couldn't fetch ${curUrl}. ${res.status}`)
+    }
+    return await res.json()
   }
 }
 

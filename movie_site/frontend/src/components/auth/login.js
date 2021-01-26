@@ -7,6 +7,7 @@ export default class Login extends Component{
   constructor(props){
     super(props);
     this.auth = new AuthFunc();
+    this.loggedIn = this.props.loggedIn;
     this.state = {
       username:'',
       password:'',
@@ -21,7 +22,8 @@ export default class Login extends Component{
         console.log(res)
         localStorage.setItem('access_token', res.access);
         localStorage.setItem('refresh_token', res.refresh);
-        this.setState({redirect: true})
+        this.loggedIn(true, this.state.username);
+        this.setState({redirect: true});
       })
       .catch(error => {
         console.log(error)
