@@ -45,9 +45,15 @@ class MoviePage extends Component {
     this.service.rateMovie(movieId, mark)
   }
 
-
   renderPerson = (persons) => {
-    return <span>{persons.map(person => <Link to={`/staff/${person.id}`}>{person.name} {person.surname}</Link>)}</span>
+    return persons.map((person, idx) => {
+       return (
+         <> <Link to={`/staff/${person.id}`}>{person.name} {person.surname}</Link>{idx < persons.length - 1 ? ', ' : ''} </>
+       )})
+  }
+
+  handleEditReview = () => event => {
+    console.log()
   }
 
   render() {
@@ -55,20 +61,22 @@ class MoviePage extends Component {
     return (
           <>
             <h2>{title} ({year})</h2>
-            ({countries.map(country => <span>{country.name}</span>)})<br />
-            Director:{this.renderPerson(director)} <br />
+            ({countries.map(country => country.name).join(", ")})<br />
+            Director: {this.renderPerson(director)} <br />
             Writers: {this.renderPerson(writers)} <br />
             Actors: {this.renderPerson(actors)}<br />
             Rating: {avg_rating} ({num_of_ratings}) <br />
-            Genres: {genres.map(genre => <span>{genre.name}</span>) }
+            Genres: {genres.map(genre => genre.name).join(", ") }
             <p>Plot: {plot}</p>
             {[...Array(10)].map( (e, i) => {
-              return <FontAwesomeIcon key={i} icon={this.state.highlight > i-1 ? solidStar : faStar}
+              return <FontAwesomeIcon  key={i} icon={this.state.highlight > i-1 ? solidStar : faStar}
               onMouseEnter={this.highlightRate(i)} onMouseLeave={this.highlightRate(-1)} onClick={this.rateMovie(id, i+1)}/>
             } )} <br />
             <ReviewForm movieId={id}/>
             Reviews: {reviews.map(review =>
-              <p><Link to={`/review/${review.id}`}>{review.title}</Link> by {review.author}</p>
+              <p>
+                <Link to={`/review/${review.id}`}>{review.title}</Link> by {review.author}
+              </p>
             )}
           </>
     )

@@ -9,7 +9,7 @@ import NavBarMenu from "./navBarMenu";
 import Login from "./auth/login.js"
 import TopPanel from "./topPanel";
 import {AuthFunc} from "../service/serviceFunc";
-
+import MovieForm from "./movieForm";
 
 class App extends Component {
   constructor(props){
@@ -53,6 +53,7 @@ class App extends Component {
           <Route  path="/staff/:staffId" component={StaffPage} />
           <Route  path="/review/:reviewId" component={SinglReviewPage} />
           <Route  path="/login/" render={ props => <Login {...props} loggedIn={this.loggedStatus} />} />
+          <Route  path="/movieform/" component={MovieForm} />
         </Switch>
       </Router>
     )

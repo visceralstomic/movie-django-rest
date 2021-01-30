@@ -132,13 +132,6 @@ class ReviewViewList(generics.ListCreateAPIView):
 	def get_serializer_class(self):
 		return ReviewCUDSerial if self.request.method == 'POST' else ReviewSerial
 
-"""	lookup_field = 'movie_pk'
-
-	def get_queryset(self):
-		queryset = self.queryset.filter(movie=self.kwargs.get('movie_pk'))
-		return queryset"""
-
-
 
 class ReviewView(generics.RetrieveUpdateDestroyAPIView):
 	queryset = Review.objects.all()

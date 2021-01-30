@@ -1,0 +1,7 @@
+
+.selectMovieInfo {
+  height: 100px;
+  width: 15%;
+  overflow-y: scroll;
+
+}

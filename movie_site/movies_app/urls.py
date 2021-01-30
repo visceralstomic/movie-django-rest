@@ -9,7 +9,6 @@ urlpatterns = [
 	path('movies/', MovieViewList.as_view()),
 	path('movies/<int:pk>', MovieView.as_view()),
 	path('movies/<int:movie_pk>/rate/', rate_movie),
-	#path('movies/<int:movie_pk>/reviews/', ReviewViewList.as_view()),
 	path('movies/reviews/', ReviewViewList.as_view()),
 	path('movies/reviews/<int:pk>', ReviewView.as_view()),
 	path('rating/', RatingViewList.as_view()),

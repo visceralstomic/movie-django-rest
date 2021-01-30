@@ -123,7 +123,7 @@ class ReviewCUDSerial(serializers.ModelSerializer):
 
 	class Meta:
 		model = Review
-		fields = ['title', 'review_text', 'author', 'movie']
+		fields = ['id', 'title', 'review_text', 'author', 'movie']
 
 
 

@@ -44,7 +44,7 @@ class Movie(models.Model):
 	plot = models.TextField(max_length=2000)
 	genres = models.ManyToManyField(Genre, related_name='movies')
 	countries = models.ManyToManyField(Country, related_name='movies')
-	num_of_ratings = models.IntegerField(null=True, blank=True)
+	num_of_ratings = models.IntegerField(null=True, blank=True, default=0)
 	avg_rating = models.FloatField(default=0, blank=True)
 
 	def get_reviews(self):

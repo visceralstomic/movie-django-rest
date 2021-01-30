@@ -6,7 +6,13 @@ class ServiceFunc {
 
   async getRecource(url=''){
     const curUrl = this.urlBase + url;
-    const res = await fetch(curUrl)
+    const res = await fetch(curUrl, {
+      method:'GET',
+      headers:{
+        'Authorization': "JWT " + localStorage.getItem('access_token'),
+      }
+
+    })
 
     if (!res.ok){
       throw new Error(`Couldn't fetch ${curUrl}. ${res.status}`)
@@ -30,15 +36,32 @@ class ServiceFunc {
     return this.getRecource(`/movies/reviews/${reviewId}`);
   }
 
-  async postReq(url, body){
+  getAllStaff(){
+    return this.getRecource("/admin/staff/")
+  }
+
+  getCountries(){
+    return this.getRecource("/admin/countries/")
+  }
+
+  getGenres(){
+    return this.getRecource("/admin/genres/")
+  }
+
+  async postReq(url, body, HTTP_Method='POST'){
     const res = await fetch(this.urlBase + url, {
-      method: "POST",
+      method: HTTP_Method,
       headers: {
         'Authorization': "JWT " + localStorage.getItem('access_token'),
         'Content-type': 'application/json'
       },
       body: JSON.stringify(body)
     })
+
+    if (res.status > 400){
+      throw new Error(`Couldn't fetch ${curUrl}. ${res.status}`)
+    }
+    return await res.json();
   }
 
   rateMovie(movieId, mark){
@@ -47,6 +70,14 @@ class ServiceFunc {
 
   createReview(body){
     return this.postReq("/movies/reviews/", body)
+  }
+
+  editReview(reviewId, body){
+    return this.postReq(`/movies/reviews/${reviewId}`, body, 'PATCH')
+  }
+
+  addMovie(body) {
+    return this.postReq('/movies/', body);
   }
 
 }
