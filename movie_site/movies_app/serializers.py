@@ -1,10 +1,18 @@
 from .models import Staff, Movie, Country, Genre, Rating, Review
 from rest_framework import serializers
+from django.contrib.auth import get_user_model
 
+User = get_user_model()
 
 """
 Mini serializers block
 """
+
+class MiniUserSerial(serializers.ModelSerializer):
+	class Meta:
+		model = User
+		fields = ['id', 'username']
+
 
 class MiniStaffSerial(serializers.ModelSerializer):
 	class Meta:
@@ -14,26 +22,27 @@ class MiniStaffSerial(serializers.ModelSerializer):
 class MiniCountrySerial(serializers.ModelSerializer):
 	class Meta:
 		model = Country
-		fields = ['name']
+		fields = ['id','name']
 
 class MiniGenresSerial(serializers.ModelSerializer):
 	class Meta:
 		model = Genre
-		fields = ['name']
+		fields = ['id','name']
 
 class MiniMoviesSerial(serializers.ModelSerializer):
 	class Meta:
 		model = Movie
-		fields = ['id', 'title']
+		fields = ['id', 'title', 'year']
 
 class MiniReviewSerial(serializers.ModelSerializer):
-	author = serializers.CharField()
-
+	author = MiniUserSerial(many=False, read_only=True)
+	movie = MiniMoviesSerial()
 	class Meta:
 		model = Review
-		fields = ['id', 'title', 'review_text', 'author']
+		fields = ['id', 'title', 'review_text', 'author' , 'approved', 'movie']
 
 class MiniRatingSerial(serializers.ModelSerializer):
+	movie = MiniMoviesSerial()
 	class Meta:
 		model = Rating
 		fields = ['movie', 'mark']
@@ -111,7 +120,7 @@ class RatingCUDSerial(serializers.ModelSerializer):
 
 
 class ReviewSerial(serializers.ModelSerializer):
-	author = serializers.CharField()
+	author = MiniUserSerial(read_only=True)
 	movie = MiniMoviesSerial()
 
 	class Meta:

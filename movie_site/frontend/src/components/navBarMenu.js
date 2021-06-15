@@ -5,7 +5,7 @@ export default class NavBarMenu extends Component {
 
   render() {
      return (
-       <h1><Link to="/">Movie rater</Link></h1>
+       <h1 className="site-title"><Link to="/">Movie_rater</Link></h1>
      )
   }
 }

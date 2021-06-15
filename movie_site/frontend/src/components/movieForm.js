@@ -1,12 +1,12 @@
 import React, {Component} from "react";
 import {ServiceFunc} from "../service/serviceFunc";
-
+import {Form ,FormGroup, Button, Input, Label} from "reactstrap";
 
 export default class MovieForm extends Component {
 
   constructor(props){
     super(props);
-    this.auth = new ServiceFunc()
+    this.service = new ServiceFunc()
     this.state = {
       staff: [],
       genres: [],
@@ -27,15 +27,15 @@ export default class MovieForm extends Component {
 
 
   componentDidMount(){
-    this.auth.getAllStaff().then(data => {
+    this.service.getAllStaff().then(data => {
       this.setState({staff:data})
     })
 
-    this.auth.getCountries().then(data => {
+    this.service.getCountries().then(data => {
       this.setState({countries: data})
     })
 
-    this.auth.getGenres().then(data => {
+    this.service.getGenres().then(data => {
       this.setState({genres: data})
     })
   }
@@ -43,11 +43,11 @@ export default class MovieForm extends Component {
   elemInfo = (elem, info) => {
     return (
       <div >
-        <label>
-          <input data-spec={info} name={elem.name} type="checkbox" value={elem.id}
+        <Label check>
+          <Input data-spec={info} name={elem.name} type="checkbox" value={elem.id}
           onChange={this.handleChange}/>
           {elem.name}
-        </label>
+        </Label>
       </div>
     )
   }
@@ -63,7 +63,6 @@ export default class MovieForm extends Component {
       movie[spec].splice(index, 1);
     }
     this.setState({movie});
-    console.log(spec, this.state.movie[spec])
   }
 
   handleInputChange = event => {
@@ -74,8 +73,7 @@ export default class MovieForm extends Component {
 
   handleSubmit = event => {
     event.preventDefault();
-    console.log(this.state.movie)
-    this.auth.addMovie(this.state.movie)
+    this.service.addMovie(this.state.movie);
   }
 
 
@@ -83,61 +81,66 @@ export default class MovieForm extends Component {
 
 
     return (
-      <>
-        <form onSubmit={this.handleSubmit}>
-          <label>
-            Title:
-            <input name='title' type='text' onChange={this.handleInputChange}/>
-          </label> <br />
-          <label>
-            Year:
-            <input name='year' type='number' onChange={this.handleInputChange}/>
-          </label> <br />
+      <div className="movie-form-page">
+        <Form onSubmit={this.handleSubmit}>
+          <FormGroup>
+            <Label for='titleId'>Title:</Label>
+            <Input name='title' type='text' id='titleId' onChange={this.handleInputChange}/>
+          </FormGroup>
+          <FormGroup>
+            <Label for='yearId'>Date:</Label>
+            <Input name='year' id='yearId' type='date'onChange={this.handleInputChange}/>
+          </FormGroup>
 
           {["Director", "Actors", "Writers"].map(role => {
             return (
-                <>
+                <FormGroup>
                   {role}
-                  <div className='selectMovieInfo'>
+                  <FormGroup id={role} className='selectMovieInfo' check>
                     {this.state.staff.map(staff =>{
                       return (
                         <div>
-                        <label>
-                          <input data-spec={role.toLowerCase()} name={`${staff.name} ${staff.surname}`} type='checkbox'
-                          value={staff.id} onChange={this.handleChange}/>
-                          {staff.name} {staff.surname}
-                        </label>
+                          <Label check>
+                            <Input data-spec={role.toLowerCase()} name={`${staff.name} ${staff.surname}`} type='checkbox'
+                            value={staff.id} onChange={this.handleChange}/>
+                            {staff.name} {staff.surname}
+                          </Label>
                         </div>
                       )
                     })}
-                  </div>
-                </>
+                  </FormGroup>
+                </FormGroup>
             )
           })}
 
-
+          <FormGroup>
           Genres:
-          <div className='selectMovieInfo'>
+          <FormGroup className='selectMovieInfo' check>
           {this.state.genres.map(genre =>{
             return this.elemInfo(genre, 'genres')
           })}
-          </div>
+          </FormGroup>
+          </FormGroup>
 
+          <FormGroup>
           Countries:
-          <div className='selectMovieInfo'>
+          <FormGroup className='selectMovieInfo' check>
           {this.state.countries.map(country =>{
             return this.elemInfo(country, 'countries')
           })}
-          </div>
+          </FormGroup>
+          </FormGroup>
 
+
+          <FormGroup>
           Plot:
-          <textarea name='plot' rows="10" cols="45"
+          <Input type="textarea" name='plot'
           value={this.state.movie.plot}
-          onChange={this.handleInputChange}></textarea><br />
-
-          <input type="submit" value="Submit"/>
-        </form>
-      </>
+          onChange={this.handleInputChange} />
+          </FormGroup>
+          <Button>Submit</Button>
+        </Form>
+      </div>
     )
   }
 }

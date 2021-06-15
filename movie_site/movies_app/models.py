@@ -1,8 +1,8 @@
 from django.db import models
 from django.core.validators import MinValueValidator, MaxValueValidator
 from django.contrib.auth import get_user_model
-
-
+from django.db.models import Avg
+from datetime import date
 
 User = get_user_model()
 
@@ -37,7 +37,7 @@ class Country(models.Model):
 
 class Movie(models.Model):
 	title = models.CharField(max_length=200)
-	year = models.IntegerField(validators=[MinValueValidator(1887), MaxValueValidator(2025)])
+	year = models.DateField()
 	director = models.ManyToManyField(Staff, related_name="director")
 	writers = models.ManyToManyField(Staff, related_name="writers")
 	actors = models.ManyToManyField(Staff, related_name="actors")
@@ -51,9 +51,9 @@ class Movie(models.Model):
 		return self.reviews.filter(approved=True)
 
 	def update_rating(self):
-		self.num_of_ratings = Rating.objects.filter(movie=self).count()
-		sum_of_ratings = sum(rating.mark for rating in Rating.objects.filter(movie=self))
-		self.avg_rating = 0 if not sum_of_ratings else sum_of_ratings/self.num_of_ratings
+		rating = Rating.objects.filter(movie=self)
+		self.num_of_ratings = rating.count()
+		self.avg_rating = rating.aggregate(Avg('mark'))['mark__avg']
 		self.save()
 
 	def __str__(self):
@@ -64,6 +64,7 @@ class Rating(models.Model):
 	mark = models.IntegerField(validators=[MinValueValidator(1), MaxValueValidator(10)])
 	movie = models.ForeignKey(Movie, on_delete=models.CASCADE)
 	user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='ratings')
+	rate_date = models.DateField(default=date.today)
 
 	def save(self, *args, **kwargs):
 		super().save(*args, **kwargs)
@@ -74,7 +75,7 @@ class Rating(models.Model):
 		self.movie.update_rating()
 
 	def __str__(self):
-		return f"{self.movie} rated {self.mark} by {self.user}"
+		return f'{self.mark:.3f}'
 
 	class Meta:
 		unique_together = [['user', 'movie'],]

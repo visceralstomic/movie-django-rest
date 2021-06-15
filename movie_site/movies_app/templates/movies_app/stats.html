@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+    table {
+        font-size: 15px;
+        border-collapse: collapse;
+        background-color: #e8e8e9;
+        font: #e8e8e9;
+    }
+    th, td {
+        padding: 7px;
+    }
+</style>
+</head>
+<body>
+<table border="1" bordercolor="#808080">
+    <tr>
+        <th>Title</th>
+        <th>Director</th>
+        <th>Year</th>
+        <th>Rating</th>
+        <th>Your rating</th> 
+    </tr>
+    {% for rating in ratings %}
+        <tr>
+            <td>
+                {{ rating.movie.title }}
+            </td>
+            <td>
+                {% for director in rating.movie.director.all %} 
+                    {{ director.surname }}, {{ director.name }}{% if not forloop.last %}; {% endif %}   
+                {% endfor %}
+            </td>
+            <td>
+                {{ rating.movie.year.year }}
+            </td>
+            <td>
+                {{ rating.movie.avg_rating|floatformat:3 }}
+            </td>
+            <td>
+                {{ rating.mark }}
+            </td>
+        </tr>
+    {% endfor %}
+</table>
+</body>
+</html>

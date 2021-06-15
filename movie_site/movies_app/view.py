@@ -4,36 +4,34 @@ from .serializers import (MovieSerial, MovieCUDSerial, GenreSerial,
 						RatingCUDSerial, ReviewSerial,	ReviewCUDSerial,
 						QuerySerializer)
 from rest_framework import generics
-from rest_framework.permissions import IsAuthenticatedOrReadOnly, IsAuthenticated, IsAdminUser
+from rest_framework.permissions import IsAuthenticatedOrReadOnly, IsAuthenticated, IsAdminUser, AllowAny
 from .mv_permissions import IsAdminOrReadOnly, IsNotAdmin, IsRaterOrRead, IsReviewerOrRead
 from django.contrib.auth import get_user_model
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
 from django.shortcuts import get_object_or_404
 from rest_framework import status, filters
-
+from django.http import JsonResponse
 
 
 class MovieViewList(generics.ListCreateAPIView):
 	queryset = Movie.objects.all()
 	serializer_class = MovieSerial
 	permission_classes = [IsAdminOrReadOnly]
-	filter_backends = [filters.SearchFilter, filters.OrderingFilter]
-	search_fields = ['name']
+	filter_backends = [filters.OrderingFilter]
 	ordering_fields = ['year', 'title', 'avg_rating', 'num_of_ratings']
 
-	@staticmethod
-	def query_check(qery_param):
+	def query_check(self, qery_param, queryset):
 		qry_serial = QuerySerializer(data=self.request.query_params)
 		qry_serial.is_valid(raise_exception=True)
-		return queryset.filter(genres__name=qry_serial.validated_data.get(qery_param))
+		return qry_serial.validated_data.get(qery_param)
 
 	def get_queryset(self):
 		queryset = self.queryset.all()
 		if self.request.query_params.get('genre', None) is not None:
-			queryset = query_check('genre')
+			queryset = queryset.filter(genres__name=self.query_check('genre', queryset))
 		if self.request.query_params.get('country', None) is not None:
-			queryset = query_check('country')
+			queryset = queryset.filter(countries__name=self.query_check('country', queryset))
 		return queryset
 
 	def get_serializer_class(self):
@@ -53,7 +51,7 @@ class MovieView(generics.RetrieveUpdateDestroyAPIView):
 class GenreViewList(generics.ListCreateAPIView):
 	queryset = Genre.objects.all()
 	serializer_class = GenreSerial
-	permission_classes = [IsAdminUser]
+	permission_classes = [IsAdminOrReadOnly]
 
 class GenreDetail(generics.RetrieveUpdateDestroyAPIView):
 	queryset = Genre.objects.all()
@@ -64,7 +62,7 @@ class GenreDetail(generics.RetrieveUpdateDestroyAPIView):
 class CountryViewList(generics.ListCreateAPIView):
 	queryset = Country.objects.all()
 	serializer_class = CountrySerial
-	permission_classes = [IsAdminUser]
+	permission_classes = [IsAdminOrReadOnly]
 
 class CountryDetail(generics.RetrieveUpdateDestroyAPIView):
 	queryset = Genre.objects.all()
@@ -162,21 +160,32 @@ def remove_review(request, pk):
 
 
 
-@api_view(['GET'])
+@api_view(['POST'])
+@permission_classes([AllowAny])
 def search(request):
-	qry = request.query_params.get('q', None)
-	if qry is not None and qry != '':
-		movies = Movie.objects.all()
-		staff = Staff.objects.all()
-		qry = qry.strip()
-		movies = movies.filter(title__icontains=qry)
-		reg_qry = r'('+'|'.join(qry.split(' ')) + ')'
-		staff = staff.filter(surname__iregex=reg_qry).union(staff.filter(surname__iregex=reg_qry))
+	data = request.data.get("search_qry", None)
+	data = data.strip()
+	if data is not None and data != '':
+		srch_movies = Movie.objects.filter(title__icontains=data)
+		reg_data = r'(' + '|'.join(data.split(' ')) + ')'
+		staff = Staff.objects.all() 
+		srch_staff = staff.filter(name__iregex=reg_data).union(staff.filter(surname__iregex=reg_data))
 		return Response({
-			'movies': MovieSerial(movies, many=True).data,
-			'staff': StaffSerial(staff, many=True).data
-				},
+			"movies": MovieSerial(srch_movies, many=True).data,
+			"staff": StaffSerial(srch_staff, many=True).data 
+			},
 			status=status.HTTP_200_OK)
 	return Response({
-		'search':'Results not found or search query wasn\'t provided'
-	})
+		'empty':'Search query wasn\'t provided'
+		})  
+
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def get_user_movie_rating(request, movie_id):
+	user = request.user
+	rating = Rating.objects.filter(user=user, movie__id=movie_id).first()
+	
+	return Response({
+		'rating': rating.mark
+	},status=status.HTTP_200_OK) 

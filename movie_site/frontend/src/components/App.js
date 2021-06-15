@@ -6,24 +6,33 @@ import {MoviePage} from "./moviePage";
 import StaffPage from "./staffPage";
 import SinglReviewPage from "./singlReviewPage";
 import NavBarMenu from "./navBarMenu";
-import Login from "./auth/login.js"
+import Login from "./auth/login";
+import SignUp from "./auth/signup";
 import TopPanel from "./topPanel";
-import {AuthFunc} from "../service/serviceFunc";
+import {UserFunc} from "../service/serviceFunc";
 import MovieForm from "./movieForm";
+import AdditionalInfo from "./additionalInfo/additionalInfo";
+import UserPage from "./user/userPage";
+
+
 
 class App extends Component {
   constructor(props){
     super(props);
-    this.auth = new AuthFunc();
+    this.auth = new UserFunc();
     this.state = {
       logged_in: localStorage.getItem('access_token') ? true : false,
-      username: ''
+      user: {
+        id: null,
+        username: '',
+        isStaff: null
+      }
     }
   }
 
   getUser(){
     this.auth.getCurrentUser().then(data => {
-        this.setState({username: data.user})
+      this.setState({user: {id: data.uid, username:data.username, isStaff: data.is_staff} })
       })
   }
 
@@ -34,27 +43,38 @@ class App extends Component {
   }
 
 
-
-  loggedStatus = (status, username) => {
-    this.setState({logged_in:status, username:username})
+  loggedStatus = (status) => {
+    this.setState({logged_in:status})
+    if(this.state.logged_in){
+      this.getUser()
+    } else {
+      this.setState({user: {id: null, username:'', isStaff: null} })
+    }
   }
 
   render() {
-
+    
     return  (
       <Router>
-        <NavBarMenu />
-
-        <TopPanel loggedStatus={this.loggedStatus} username={this.state.username} logged_in={this.state.logged_in}/>
+        <>
+        <TopPanel loggedStatus={this.loggedStatus} user={this.state.user} logged_in={this.state.logged_in}/>
 
         <Switch>
-          <Route exact path="/" component={HomePage}/>
-          <Route  path="/movie/:movieId" component={MoviePage} />
+          <Route exact path="/" 
+            render={ props => <HomePage {...props} logged_in={this.state.logged_in} /> } />
+          <Route  path="/movie/:movieId"  
+          render={ props=> <MoviePage {...props} user={this.state.user} loggedIn={this.state.logged_in} /> } />
           <Route  path="/staff/:staffId" component={StaffPage} />
-          <Route  path="/review/:reviewId" component={SinglReviewPage} />
-          <Route  path="/login/" render={ props => <Login {...props} loggedIn={this.loggedStatus} />} />
+          <Route  path="/review/:reviewId" 
+            render={ props => < SinglReviewPage {...props} user={this.state.user} /> }  /> 
+          <Route  path="/login/" 
+          render={ props => <Login {...props} loggedIn={this.loggedStatus} />} />
+          <Route  path="/signup/" component={SignUp}/>
           <Route  path="/movieform/" component={MovieForm} />
+          <Route  path="/addinfo/" component={AdditionalInfo} />
+          <Route  path="/user/:uid" component={UserPage} />
         </Switch>
+        </>
       </Router>
     )
   }
