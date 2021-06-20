@@ -47,8 +47,6 @@ class Movie(models.Model):
 	num_of_ratings = models.IntegerField(null=True, blank=True, default=0)
 	avg_rating = models.FloatField(default=0, blank=True)
 
-	def get_reviews(self):
-		return self.reviews.filter(approved=True)
 
 	def update_rating(self):
 		rating = Rating.objects.filter(movie=self)

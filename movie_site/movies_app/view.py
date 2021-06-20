@@ -65,7 +65,7 @@ class CountryViewList(generics.ListCreateAPIView):
 	permission_classes = [IsAdminOrReadOnly]
 
 class CountryDetail(generics.RetrieveUpdateDestroyAPIView):
-	queryset = Genre.objects.all()
+	queryset = Country.objects.all()
 	serializer_class = CountrySerial
 	permission_classes = [IsAdminUser]
 

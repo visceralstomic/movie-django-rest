@@ -34,6 +34,7 @@ class MiniMoviesSerial(serializers.ModelSerializer):
 		model = Movie
 		fields = ['id', 'title', 'year']
 
+
 class MiniReviewSerial(serializers.ModelSerializer):
 	author = MiniUserSerial(many=False, read_only=True)
 	movie = MiniMoviesSerial()
@@ -65,6 +66,8 @@ class MovieSerial(serializers.ModelSerializer):
 		model = Movie
 		fields = ['id','title', 'year', 'director', 'writers', 'actors',
 				  'plot', 'genres', 'countries', 'num_of_ratings', 'avg_rating', 'reviews']
+	
+
 
 
 
