@@ -187,5 +187,5 @@ def get_user_movie_rating(request, movie_id):
 	rating = Rating.objects.filter(user=user, movie__id=movie_id).first()
 	
 	return Response({
-		'rating': rating.mark
+		'rating': 0 if rating is None else rating.mark
 	},status=status.HTTP_200_OK) 

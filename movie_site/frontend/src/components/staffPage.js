@@ -44,18 +44,20 @@ export default class StaffPage extends Component {
         <div>
           {[ [director, "Director"], [writers, "Writer"], [actors,'Actor'] ].map(element => {
             return (
-              <>
-              <ListGroup key={element[1]}>
-                <ListGroupItem tag="h4" className="staff-list-title" color="dark">{element[1]}</ListGroupItem>
+              <div key={element[1]}>
+              <ListGroup >
+                <ListGroupItem tag="h4" className="staff-list-title" color="dark">
+                  {element[1]}
+                </ListGroupItem>
                 {element[0].length != 0 ? element[0].map(movie => 
-                <ListGroupItem key={movie.id} tag={Link} to={`/movie/${movie.id}`} action>
-                  {movie.title} ({new Date(movie.year).getFullYear()})
+                  <ListGroupItem key={movie.id} tag={Link} to={`/movie/${movie.id}`} action>
+                    {movie.title} ({new Date(movie.year).getFullYear()})
                 </ListGroupItem>)
                  :<ListGroupItem>
                     No entries in that role
                   </ListGroupItem> }
               </ListGroup> <br/>
-              </>
+              </div>
               )
           })}
         </div>

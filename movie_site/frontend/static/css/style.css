@@ -162,7 +162,7 @@ html {
   color: #232323;
 }
 
-.footer {
+.auth-footer {
   color: #232323;
 }
 
@@ -272,3 +272,9 @@ html {
 }
 
 /* Movie creation  block end */
+
+.spinn {
+  position: absolute;
+  top: 50%;
+  left: 50%
+}

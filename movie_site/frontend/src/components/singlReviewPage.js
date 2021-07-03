@@ -80,7 +80,9 @@ export default class SinglReviewPage extends Component {
             <CardBody>
             { !this.state.edit
               ?<>
-                <CardTitle tag="h5"><span className="review-title">{title}</span> by {author.username}, {this.formatRevDate(new Date(created))}</CardTitle>
+                <CardTitle tag="h5">
+                  <span className="review-title">{title}</span> by {author.username}, {this.formatRevDate(new Date(created))}
+                </CardTitle>
                 <CardText>{review_text}</CardText>
                 {user.id == author.id
                 ? <div className="form-button">

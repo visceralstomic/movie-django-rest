@@ -2,9 +2,11 @@ import React, { Component } from "react";
 import {Link} from 'react-router-dom';
 import {ServiceFunc} from "../service/serviceFunc";
 import Filters from "./filters";
-import { Container, Row, Col, ListGroup,
+import { Container, Row, Col, ListGroup, Spinner,
       ListGroupItem, ListGroupItemText, ListGroupItemHeading} from "reactstrap";
+import { movieList } from "../tests/fake-data";
 
+      
 class HomePage extends Component {
   constructor(props){
     super(props);
@@ -38,30 +40,36 @@ class HomePage extends Component {
 
   render(){
     return (
-      <Container>
-        <Row>
-          <Col>
-            <ListGroup>
-              {this.state.data.map(movie => {
-                return (
-                  <ListGroupItem tag={Link} color="secondary" to={`/movie/${movie.id}`} key={movie.id} action>
-                    <ListGroupItemHeading> 
-                      {movie.title}
-                    </ListGroupItemHeading>
-                    <ListGroupItemText>
-                      {new Date(movie.year).getFullYear()} | {movie.countries.map(country => country.name).join(", ")} |{' '}
-                       {movie.genres.map(country => country.name).join(", ")}
-                    </ListGroupItemText>
-                  </ListGroupItem>
-                );
-              })}
-            </ListGroup>
-          </Col>
-          <Col >
-              <Filters getMovies={this.getMovies} loggedIn={this.loggedIn}/>
-          </Col> 
-        </Row>
-      </Container>
+      <>
+        {this.state.loaded
+        ? <>
+            <Container>
+            <Row>
+              <Col>
+                <ListGroup>
+                  {this.state.data.map(movie => {
+                    return (
+                      <ListGroupItem tag={Link} color="secondary" to={`/movie/${movie.id}`} key={movie.id} action>
+                        <ListGroupItemHeading> 
+                          {movie.title}
+                        </ListGroupItemHeading>
+                        <ListGroupItemText>
+                          {new Date(movie.year).getFullYear()} | {movie.countries.map(country => country.name).join(", ")} |{' '}
+                          {movie.genres.map(genre => genre.name).join(", ")} | {" "}
+                          Rating: {Math.round(movie.avg_rating * 1000) / 1000}
+                        </ListGroupItemText>
+                      </ListGroupItem>
+                    );
+                  })}
+                </ListGroup>
+              </Col>
+              <Col >
+                  <Filters getMovies={this.getMovies} loggedIn={this.loggedIn}/>
+              </Col> 
+            </Row>
+            </Container>
+          </> : <Spinner className='spinn' color="dark" />}
+      </>
     )
   }
 }

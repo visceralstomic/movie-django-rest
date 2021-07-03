@@ -5,7 +5,6 @@ import { BrowserRouter as Router, Switch, Route, Link, Redirect } from "react-ro
 import {MoviePage} from "./moviePage";
 import StaffPage from "./staffPage";
 import SinglReviewPage from "./singlReviewPage";
-import NavBarMenu from "./navBarMenu";
 import Login from "./auth/login";
 import SignUp from "./auth/signup";
 import TopPanel from "./topPanel";

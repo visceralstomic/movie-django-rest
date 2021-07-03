@@ -42,7 +42,9 @@ export default class UserStats extends Component {
         }).catch(error => {
             console.log(error)
         })
-    } 
+    }
+    
+    roundRating = rating => Math.round(rating * 1000) / 1000;
 
     render() {
         const  {mostRtdYr, hgstRtdYr, numOfRating, avgPerGnr, calcStats} = this.state;
@@ -148,7 +150,7 @@ export default class UserStats extends Component {
                         containerComponent={
                             <VictoryVoronoiContainer 
                                 labels={
-                                    ({datum}) => `${datum.movie__genres__name}: ${datum.avg_mark}`
+                                    ({datum}) => `${datum.movie__genres__name}: ${this.roundRating(datum.avg_mark)}`
                                 }
                                 labelComponent={
                                     <VictoryTooltip 

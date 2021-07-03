@@ -27,9 +27,13 @@ export default class Filters extends Component {
     componentDidMount(){
         this.service.getGenres(this.loggedIn).then(data =>{
             this.setState({genres: data})
+        }).catch(err => {
+            console.log(err)
         })
         this.service.getCountries(this.loggedIn).then(data =>{
             this.setState({countries: data})
+        }).catch(err => {
+            console.log(err)
         })
     }
 
