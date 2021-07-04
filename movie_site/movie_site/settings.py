@@ -83,14 +83,16 @@ WSGI_APPLICATION = 'movie_site.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/3.1/ref/settings/#databases
 
+from .db_settings import db_settings
+
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'movie_db',
-        'USER': 'prospero',
-        'PASSWORD': '4815162342y',
-        'HOST': 'localhost',
-        'POST': '5432',
+        'NAME': db_settings['NAME'],
+        'USER': db_settings['USER'],
+        'PASSWORD': db_settings['PASSWORD'],
+        'HOST': db_settings['HOST'],
+        'PORT': db_settings['PORT'],
     }
 }
 # Password validation
@@ -152,11 +154,7 @@ STATIC_URL = '/static/'
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
-EMAIL_USE_TLS = True
-EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_HOST_USER = 'fortestmail97@gmail.com'
-EMAIL_HOST_PASSWORD = 'lrmd4815162342y'
-EMAIL_PORT = 587
+from .email_settings import *
 
 CELERY_BROKER_URL = 'redis://localhost:6379'  
 CELERY_RESULT_BACKEND = 'redis://localhost:6379' 

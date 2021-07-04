@@ -8,7 +8,9 @@ db.sqlite3-journal
 media
 venv/
 **migrations/
-**__pycache__/
+__pycache__/
+db_settings.py
+email_settings.py 
 
 # Celery stuff
 celerybeat-schedule
