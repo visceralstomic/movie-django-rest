@@ -21,4 +21,5 @@ urlpatterns = [
    	path('api/', include('movies_app.urls')),
     path('users/', include('users_app.urls')),
    	path('api-auth/', include('rest_framework.urls')),
+    path('', include('frontend.urls')),
 ]

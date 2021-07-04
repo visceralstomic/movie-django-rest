@@ -1,1 +1,40 @@
+
+### Django ###
+*.log
+*.pot
+*.pyc
+db.sqlite3
+db.sqlite3-journal
+media
 venv/
+**migrations/
+__pycache__/
+db_settings.py
+email_settings.py 
+
+# Celery stuff
+celerybeat-schedule
+celerybeat.pid
+
+# dependencies
+**node_modules/
+/.pnp
+.pnp.js
+
+# testing
+/coverage
+
+# production
+/build
+
+# misc
+.DS_Store
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+

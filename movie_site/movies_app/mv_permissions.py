@@ -16,3 +16,18 @@ class IsNotAdmin(permissions.BasePermission):
 			return True if request.method in permissions.SAFE_METHODS else False
 		else:
 			return True
+
+
+class IsRaterOrRead(permissions.BasePermission):
+
+	def has_object_permission(self, request, view, obj):
+		if request.user == obj.user :
+			return True
+		else:
+			return request.method in permissions.SAFE_METHODS
+
+
+class IsReviewerOrRead(permissions.BasePermission):
+
+	def has_object_permission(self, request, view, obj):
+		return True if request.user == obj.author else request.method in permissions.SAFE_METHODS

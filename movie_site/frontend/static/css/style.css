@@ -1,0 +1,280 @@
+
+html {
+  background-color: #E9E9E9;
+}
+
+#app {
+  background-color: #E9E9E9;
+  color: #232323;
+  margin-bottom: 15px;
+}
+
+
+
+/* Top bar block */
+
+.top-bar {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 15px;
+  background-color: #E4E4E4;
+  align-items: center;
+
+}
+.top-bar a:not(.search-link, .admin-button) {
+  text-decoration: none;
+  padding: 15px 10px;  
+}
+.auth-block {
+  display: flex;
+}
+
+.auth-block a {
+  color: #232323;
+}
+
+.top-bar a:hover:not(.search-link, .user-link, .admin-button){
+  text-decoration: none;
+  color: #E9E9E9;
+  background-color: #232323;
+}
+
+.site-title {
+  color: #E9E9E9;
+  background-color: #232323;
+  font-weight: bold;
+}
+
+.user-link {
+  color: #232323;
+}
+
+.user-link:hover {
+  font-weight: bold;
+  color: #232323;
+}
+
+.logged-block {
+  margin-right: 7px;
+}
+
+/* Top bar block end */
+
+
+
+.selectMovieInfo {
+  height: 100px;
+  width: 15%;
+  overflow-y: scroll;
+
+}
+
+
+
+/* Signup block */
+
+.reg-area {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.reg-form button{
+  display: flex;
+  align-self: center;
+}
+
+.reg-form {
+  width: 280px;
+}
+
+.error-message {
+  color: #f55c47;
+}
+
+/* Signup block end */
+
+
+/* Login block */
+
+.login-area {
+  margin-left: 30%;
+  width: 480px;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Login block end */
+
+
+
+/* Filter block */
+
+.filter-list {
+  max-height: 300px;
+  overflow-y: auto;
+}
+
+.filter-wrap {
+  max-width: 550px;
+  position: fixed;
+  border-radius: 10px;
+  padding: 10px;
+  background-color: #E4E4E4;
+
+}
+
+/* Filter block end */
+
+
+
+/* Movie page block */
+
+.movie-container {
+  margin-left: 10%;
+  margin-right: 10%;
+}
+
+.movie-header {
+  color: #232323;
+}
+
+.review-list {
+  margin-top: 20px;
+}
+
+.review-link {
+  color: #232323;
+}
+
+.review-link:hover {
+  color: #232323;
+  font-weight: bold;
+  text-decoration: none;
+}
+
+.person-name a {
+  color: #232323;
+}
+
+.person-name a:hover {
+  color: #232323;
+}
+
+.auth-footer {
+  color: #232323;
+}
+
+.stars {
+  color: #232323;
+}
+
+
+/* Movie page block end */
+
+
+
+
+/* Staff page block */
+
+.staff-block {
+  margin-left: 7%;
+  margin-right: 10%;
+}
+
+.staff-list-title {
+  max-width: 150px;
+  margin-left: 5px;
+}
+
+/* Staff page block end */
+
+
+
+/* Review page block */
+
+.review-area {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.review-title {
+  font-weight: bold;
+}
+
+.review-mv-title a {
+  color: #232323;
+}
+
+.review-mv-title a:hover {
+  color: #232323;
+}
+
+.review-form {
+  max-width: 500px;
+}
+/* Review page block end */
+
+
+/* User page block */
+
+.user-info {
+  margin-top: 10px;
+  margin-right: 10%;
+  margin-left: 5%;
+  margin-bottom: 15px;
+}
+
+.user-info-nav {
+  margin-left: 5%;
+}
+
+.user-nav-link a {
+  cursor: pointer;
+  color: #232323;
+}
+
+.user-nav-link a:hover {
+  color: #232323;
+}
+
+.user-nav-list {
+  margin-top: 7px;
+  max-width: 600px;
+}
+
+.user-nav {
+  margin-top: 10px;
+}
+/* User page block end */
+
+.form-button {
+  display: flex;
+  justify-content: space-around;
+}
+
+
+/* Movie creation block */
+
+.movie-form-page {
+  margin-left: 10%;
+  margin-right: 10%;
+}
+
+#titleId, #yearId {
+  max-width: 250px;
+}
+
+.add-title {
+  margin-left: 15%;
+}
+
+/* Movie creation  block end */
+
+.spinn {
+  position: absolute;
+  top: 50%;
+  left: 50%
+}
